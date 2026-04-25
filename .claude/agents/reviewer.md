@@ -30,7 +30,8 @@ If the orchestrator passes a `workstream_id`, echo it back in your output.
    - **Correctness**: off-by-one, null/undefined handling, swallowed errors, race conditions, resource leaks (file handles, sockets, listeners), unsafe type coercion, missing await on promises.
    - **Design**: dead code, premature abstraction, tight coupling that hurts testability, violations of project conventions (read CLAUDE.md if present).
    - **Plan adherence**: does the implementation actually satisfy the workstream's `acceptance_criteria`?
-4. You MAY run read-only commands: `npx tsc --noEmit`, `npm run lint`, `npm run typecheck`. Do NOT run tests (the Tester does that). Do NOT modify anything.
+   - **Scope-creep**: cross-reference the list of changed files in `implementation.files_changed` against the workstream's declared `files`. Any file modified that was NOT in the planner's authorized scope is a scope-creep finding. Severity defaults to `medium`; raise to `high` if the unauthorized change introduces user-facing behavior (UI elements, public API, route, copy). For an integration-phase review the orchestrator will pass `expected_files` and `out_of_scope_files` lists explicitly — flag every entry in `out_of_scope_files` that introduces user-visible behavior as `severity: high`, with `category: scope-creep`.
+4. You MAY run read-only commands: `npx tsc --noEmit`, `npm run lint`, `npm run typecheck`, plus `git diff --stat <pre_merge_sha>..HEAD` and `git log --oneline <pre_merge_sha>..HEAD` when the orchestrator passes those SHAs for an integration review. Do NOT run tests (the Tester does that). Do NOT modify anything.
 
 # Output (REQUIRED — exactly one fenced yaml block, this format)
 
@@ -42,7 +43,7 @@ review:
   issues:
     - id: R1
       severity: blocker | high | medium | low
-      category: security | correctness | design | plan-adherence
+      category: security | correctness | design | plan-adherence | scope-creep
       file: <relative path inside the worktree>
       line: <number or range>
       problem: <specific>

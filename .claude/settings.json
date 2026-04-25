@@ -1,11 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "mcpServers": {
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"]
-    }
-  },
   "permissions": {
     "defaultMode": "bypassPermissions",
     "allow": [
@@ -20,30 +14,6 @@
       "Bash(tee:*)",
       "mcp__playwright__*",
       "Task"
-    ]
-  },
-  "hooks": {
-    "SubagentStop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "tee -a .claude/pipeline.jsonl > /dev/null"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "tee -a .claude/pipeline.jsonl > /dev/null"
-          }
-        ]
-      }
     ]
   }
 }
